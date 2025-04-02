@@ -1,6 +1,5 @@
 name: Generate CHANGELOG
 
-
 on:
   push:
     tags:
@@ -11,30 +10,34 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Checkout repository
-      uses: actions/checkout@v3
+      - name: Checkout repository
+        uses: actions/checkout@v3
 
-    - name: Set up Ruby
-      uses: ruby/setup-ruby@v1
-      with:
-        ruby-version: '3.2'
+      - name: Set up Ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: '3.2'
 
-    - name: Install github_changelog_generator
-      run: gem install github_changelog_generator
+      - name: Install github_changelog_generator
+        run: gem install github_changelog_generator
 
-    - name: Generate CHANGELOG.md
-      run: |
-        github_changelog_generator \
-          --user ${{ github.repository_owner }} \
-          --project ${GITHUB_REPOSITORY#*/} \
-          --token ${{ secrets.WORKFLOW_TOKEN }}
+      - name: Generate CHANGELOG.md
+        run: |
+          github_changelog_generator \
+            --user ${{ github.repository_owner }} \
+            --project ${GITHUB_REPOSITORY#*/} \
+            --token ${{ secrets.GH_PAT }}
 
-    - name: Commit and push CHANGELOG.md
-      env:
-        WORKFLOW_TOKEN: ${{ secrets.WORKFLOW_TOKEN }}
-      run: |
-        git config --global user.email "actions@github.com"
-        git config --global user.name "GitHub Actions"
-        git add CHANGELOG.md
-        git commit -m "Auto-update CHANGELOG.md" || echo "No changes to commit"
-        git push https://x-access-token:${{ secrets.WORKFLOW_TOKEN }}@github.com/${{ github.repository }} HEAD:refs/heads/main
+      - name: Commit and push CHANGELOG.md
+        env:
+          GH_PAT: ${{ secrets.GH_PAT }}
+        run: |
+          git config --global user.email "actions@github.com"
+          git config --global user.name "GitHub Actions"
+          git remote set-url origin https://x-access-token:${GH_PAT}@github.com/${{ github.repository }}
+          git fetch origin
+          git checkout main
+          git pull origin main
+          git add CHANGELOG.md
+          git commit -m "Auto-update CHANGELOG.md" || echo "No changes to commit"
+          git push origin main
