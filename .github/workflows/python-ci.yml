@@ -31,4 +31,4 @@ jobs:
 
     - name: Run script (optional sanity check)
       run: |
-        python your_main_script.py
+        python main.py
