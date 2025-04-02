@@ -1,5 +1,9 @@
 # Changelog
 
+## [v1.18](https://github.com/knr83/lol-win-predictor-ai-pytorch/tree/v1.18) (2025-04-02)
+
+[Full Changelog](https://github.com/knr83/lol-win-predictor-ai-pytorch/compare/v1.17...v1.18)
+
 ## [v1.17](https://github.com/knr83/lol-win-predictor-ai-pytorch/tree/v1.17) (2025-04-02)
 
 [Full Changelog](https://github.com/knr83/lol-win-predictor-ai-pytorch/compare/v1.16...v1.17)
