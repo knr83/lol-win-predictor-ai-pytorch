@@ -34,13 +34,7 @@ jobs:
 
       - name: Generate CHANGELOG.md from commits
         run: |
-          if [ ! -f CHANGELOG.md ]; then
-            echo "Initializing full changelog..."
-            conventional-changelog -p angular -i CHANGELOG.md -s -r 0
-          else
-            echo "Appending latest changelog..."
-            conventional-changelog -p angular -i CHANGELOG.md -s -r 1
-          fi
+          conventional-changelog -p conventionalcommits -i CHANGELOG.md -s -r 0
 
       - name: Commit and push CHANGELOG.md
         run: |
