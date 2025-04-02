@@ -34,5 +34,4 @@ jobs:
         git config --global user.name "GitHub Actions"
         git add CHANGELOG.md
         git commit -m "Auto-update CHANGELOG.md"
-        git push origin HEAD:main
-
+        git push origin HEAD:refs/heads/main
