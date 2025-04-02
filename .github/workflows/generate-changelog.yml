@@ -1,4 +1,4 @@
-name: Generate CHANGELOG
+name: Generate CHANGELOG from commits
 
 on:
   push:
@@ -15,15 +15,13 @@ jobs:
         with:
           token: ${{ secrets.GH_PAT }}
 
-      - name: Set up Ruby
-        uses: ruby/setup-ruby@v1
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
         with:
-          ruby-version: '3.2'
+          node-version: '20'
 
-      - name: Install dependencies
-        run: |
-          gem install github_changelog_generator
-          sudo apt-get update && sudo apt-get install -y jq
+      - name: Install conventional-changelog
+        run: npm install -g conventional-changelog-cli
 
       - name: Prepare main branch
         run: |
@@ -34,12 +32,9 @@ jobs:
           git checkout -b main origin/main
           git pull origin main
 
-      - name: Generate CHANGELOG.md
+      - name: Generate CHANGELOG.md from commits
         run: |
-          github_changelog_generator \
-            --user ${{ github.repository_owner }} \
-            --project ${GITHUB_REPOSITORY#*/} \
-            --token ${{ secrets.GH_PAT }}
+          conventional-changelog -p angular -i CHANGELOG.md -s -r 0
 
       - name: Commit and push CHANGELOG.md
         run: |
@@ -47,12 +42,15 @@ jobs:
           git commit -m "Auto-update CHANGELOG.md" || echo "No changes to commit"
           git push origin main
 
+      - name: Install jq
+        run: sudo apt-get update && sudo apt-get install -y jq
+
       - name: Create GitHub Release
         env:
           GH_PAT: ${{ secrets.GH_PAT }}
         run: |
           TAG_NAME=$(echo "${GITHUB_REF}" | sed 's#refs/tags/##')
-          BODY=$(awk '/## \[/ {found=1} found' CHANGELOG.md)
+          BODY=$(awk '/^## \[/ {found=1} found' CHANGELOG.md)
 
           echo "Creating release for $TAG_NAME..."
 
